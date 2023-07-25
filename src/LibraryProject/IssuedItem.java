@@ -1,2 +1,4 @@
-package LibraryProject;public class IssuedItem {
+package LibraryProject;
+
+public class IssuedItem {
 }
