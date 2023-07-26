@@ -13,26 +13,17 @@ public class Library {
         System.out.println("Please enter your library card number");
         int libraryCardNumber=Integer.parseInt(br.readLine());
         String itemName="";
-
-
-
-
-        System.out.println("Please select an option:");
-        System.out.println("1.return book//takes the itemId as entry from user\n" +
-                "2.renew book\n" +
-                "3.request book\n" +
-                "4.get user information\n" +
-                "5.optionToExit\n");
-        int choice=Integer.parseInt(br.readLine());
-
+        int choice;
         do{
-            System.out.println("1.return book//takes the itemId as entry from user\n" +
+            System.out.println("Please select an option:");
+            System.out.println("1.return book\n" +
                     "2.renew book\n" +
                     "3.request book\n" +
                     "4.get user information\n" +
                     "5.optionToExit\n");
-            switch(choice)
-            {case 1:{   System.out.println("Please enter name of item to be returned");
+            choice=Integer.parseInt(br.readLine());
+            switch(choice){
+            case 1:{   System.out.println("Please enter name of item to be returned");
                 itemName=br.readLine();
                 ItemReturn returnObject=new ItemReturn(itemName);
                 break;
@@ -43,7 +34,7 @@ public class Library {
                     break;
 
             }
-                case 3:{
+            case 3:{
                     System.out.println("Please enter name of item to be requested");
                     itemName=br.readLine();
                     ItemRequest requestObject=new ItemRequest(itemName);
