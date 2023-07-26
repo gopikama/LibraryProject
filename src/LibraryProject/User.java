@@ -29,9 +29,21 @@ public class User {
 
             int flag=0;
             while(rs.next()){
+                //fetching all user details for admin/library
+                if (libraryCardNumber == 1111){
+                    flag=1;
+                    if (Integer.parseInt(rs.getString(2))!=libraryCardNumber) {
+                        System.out.print("Name: " + rs.getString(1) + "\n");
+                    System.out.print("Library Card Number: " + rs.getString(2) + "\n");
+                    System.out.print("Address: " + rs.getString(3) + "\n");
+                    System.out.print("Phone Number: " + rs.getString(4) + "\n");
+                    System.out.print("Age: " + rs.getString(5) + "\n");
+                    System.out.print("Total Over Due Fine: " + rs.getString(6) + "\n");
+                }
+                }
+                //fetching a particular user's details for user
 
-
-                if (Integer.parseInt(rs.getString(2))==(libraryCardNumber)){
+                else if (Integer.parseInt(rs.getString(2))==(libraryCardNumber)){
                         flag=1;
                         System.out.print("Name: "+rs.getString(1)+"\n");
                     System.out.print("Library Card Number: "+rs.getString(2)+"\n");
@@ -45,7 +57,7 @@ public class User {
             }
 
             if(flag==0 )
-                    System.out.println("Invalid card number");
+                    System.out.println("Invalid card number,user not found!");
 
         }
         catch(SQLException  e)
