@@ -17,31 +17,34 @@ public class Library {
         if(libraryCardNumber!=1111) {
             do {
                 System.out.println("Please select an option:");
-                System.out.println("1.return book\n" +
-                        "2.renew book\n" +
-                        "3.request book\n" +
+                System.out.println("1.request book\n" +
+                        "2.return book\n" +
+                        "3.renew book\n" +
                         "4.get user information\n" +
                         "5.optionToExit\n");
                 choice = Integer.parseInt(br.readLine());
                 switch (choice) {
                     case 1: {
+                        System.out.println("Please enter name of item to be requested");
+                        itemName = br.readLine();
+                        ItemRequest requestObject = new ItemRequest(itemName);
+                        break;
+
+                    }
+                    case 2: {
                         System.out.println("Please enter name of item to be returned");
                         itemName = br.readLine();
                         ItemReturn returnObject = new ItemReturn(itemName);
                         break;
+
+
                     }
-                    case 2: {
+                    case 3: {
                         System.out.println("Please enter name of item to be renewed");
                         itemName = br.readLine();
                         ItemRenew renewObject = new ItemRenew(itemName);
                         break;
 
-                    }
-                    case 3: {
-                        System.out.println("Please enter name of item to be requested");
-                        itemName = br.readLine();
-                        ItemRequest requestObject = new ItemRequest(itemName);
-                        break;
 
                     }
                     case 4: {
@@ -55,7 +58,7 @@ public class Library {
 
                     }
                 }
-                System.out.println("Do you want to continue ,if you want to exit press 5 otherwise enter a choice(1/2/3/4):");
+                System.out.println("Do you want to continue ,if you want to exit press 5 otherwise enter 0 to continue:");
                 choice = Integer.parseInt(br.readLine());
 
 
