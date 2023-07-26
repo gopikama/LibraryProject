@@ -68,8 +68,9 @@ public class Library {
             do{
                 System.out.println("Please select an option:");
                 System.out.println("1.Get information about all users\n" +
-                        "2.Get a particular users checked out book details\n" +
-                        "3.exit\n");
+                        "2.Get details of all  the books issued out to users\n" +
+                        "3.Get a particular user's checked out book details\n" +
+                        "4.exit\n");
                 choice=Integer.parseInt(br.readLine());
                 switch (choice) {
                     case 1: {
@@ -77,16 +78,24 @@ public class Library {
                         userObject.displayUserDetails();
                         break;
                     }
-                    case 2:
-                        System.out.println("Enter name of user to get issued book details");
+                    case 2: {
+                        User userObject = new User(libraryCardNumber);
+                        userObject.displayIssuedBookDetails();
                         break;
-
-                    case 3:
+                    }
+                    case 3: {
+                        User userObject = new User(libraryCardNumber);
+                        System.out.println("Please enter library card number of user,whose issued book details are required:");
+                        int libCard = Integer.parseInt(br.readLine());
+                        userObject.displayBooksIssuedToUser(libCard);
+                        break;
+                    }
+                    case 4:
                         break;
 
                 }
 
-            }while(choice!=3);
+            }while(choice!=4);
 
         }
     }

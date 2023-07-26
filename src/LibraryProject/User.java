@@ -69,4 +69,85 @@ public class User {
         }
 
     }
+
+    public void displayIssuedBookDetails() {
+
+        try {
+            //Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary", "root", "GopuSri123@");
+            PreparedStatement stmt = conn.prepareStatement("select * from issueditem;");
+            ResultSet rs = stmt.executeQuery();
+
+            int flag = 0;
+            while (rs.next()) {
+                //fetching all user details
+                if (libraryCardNumber == 1111) {
+                    flag = 1;
+                    System.out.println("");
+                    System.out.print("Library Card Number: " + rs.getString(3) + "\n");
+                    System.out.print("Issued item's ID: " + rs.getString(2) + "\n");
+                    System.out.print("Due Date: " + rs.getString(4) + "\n");
+                    System.out.print("Outstanding days: " + rs.getString(7) + "\n");
+
+                }
+
+
+            }
+
+            if (flag == 0)
+                System.out.println("Invalid card number,user not found!");
+
+        } catch (SQLException e) {
+
+            System.out.println(e);
+
+
+        }
+    }
+        public void displayBooksIssuedToUser(int libCard){
+
+            System.out.println("Books issued to library card number: "+libCard+" are: ");
+            try
+            {
+                //Class.forName("com.mysql.jdbc.Driver");
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","GopuSri123@");
+                PreparedStatement stmt=conn.prepareStatement("select * from issueditem natural join item where libraryCardNumber=? ;");
+                stmt.setInt(1,libCard);
+                ResultSet rs=stmt.executeQuery();
+
+                int flag=0;
+                while(rs.next()){
+                    //fetching all user details
+                    if (libraryCardNumber == 1111){
+                        flag=1;
+                        System.out.println("");
+                        System.out.print("Library Card Number: " + rs.getString(3) + "\n");
+                        System.out.print("Issued item's ID: " + rs.getString(2) + "\n");
+                        System.out.print("Issued Item: " + rs.getString(10) + "\n");
+                        System.out.print("Due Date: " + rs.getString(4) + "\n");
+                        System.out.print("Outstanding days: " + rs.getString(7) + "\n");
+
+                    }
+
+
+                }
+
+                if(flag==0 )
+                    System.out.println("Invalid card number,user not found!");
+
+            }
+            catch(SQLException  e)
+            {
+
+                System.out.println(e);
+
+
+            }
+
+
+
+
+
+
+        }
 }
