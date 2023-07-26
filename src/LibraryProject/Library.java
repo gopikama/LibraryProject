@@ -87,7 +87,9 @@ public class Library {
                         User userObject = new User(libraryCardNumber);
                         System.out.println("Please enter library card number of user,whose issued book details are required:");
                         int libCard = Integer.parseInt(br.readLine());
-                        userObject.displayBooksIssuedToUser(libCard);
+                        System.out.println("Please enter name of user,whose issued book details are required:");
+                        String name = br.readLine();
+                        userObject.displayBooksIssuedToUser(libCard,name);
                         break;
                     }
                     case 4:

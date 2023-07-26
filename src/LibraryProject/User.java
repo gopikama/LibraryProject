@@ -104,15 +104,16 @@ public class User {
 
         }
     }
-        public void displayBooksIssuedToUser(int libCard){
+        public void displayBooksIssuedToUser(int libCard,String name){
 
             System.out.println("Books issued to library card number: "+libCard+" are: ");
             try
             {
                 //Class.forName("com.mysql.jdbc.Driver");
                 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","GopuSri123@");
-                PreparedStatement stmt=conn.prepareStatement("select * from issueditem natural join item where libraryCardNumber=? ;");
+                PreparedStatement stmt=conn.prepareStatement("select * from issueditem natural join item natural join user where libraryCardNumber=? and name=? ;");
                 stmt.setInt(1,libCard);
+                stmt.setString(2,name);
                 ResultSet rs=stmt.executeQuery();
 
                 int flag=0;
@@ -121,11 +122,12 @@ public class User {
                     if (libraryCardNumber == 1111){
                         flag=1;
                         System.out.println("");
-                        System.out.print("Library Card Number: " + rs.getString(3) + "\n");
-                        System.out.print("Issued item's ID: " + rs.getString(2) + "\n");
-                        System.out.print("Issued Item: " + rs.getString(10) + "\n");
-                        System.out.print("Due Date: " + rs.getString(4) + "\n");
-                        System.out.print("Outstanding days: " + rs.getString(7) + "\n");
+                        System.out.print("User Name: " + rs.getString(13) + "\n");
+                        System.out.print("Issued Item's ID: " + rs.getString(3) + "\n");
+                        System.out.print("Issued item's name: " + rs.getString(8) + "\n");
+                        System.out.print("Issued Item's due date: " + rs.getString(4) + "\n");
+                        System.out.print("Issued Item's issue date: " + rs.getString(5) + "\n");
+                        System.out.print("Outstanding days: " + rs.getString(7) + "\n");//issue
 
                     }
 
