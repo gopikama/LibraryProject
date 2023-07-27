@@ -23,7 +23,7 @@ public class User {
         try
         {
             //Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","GopuSri123@");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","admin@1234");
             PreparedStatement stmt=conn.prepareStatement("select * from user;");
             ResultSet rs=stmt.executeQuery();
 

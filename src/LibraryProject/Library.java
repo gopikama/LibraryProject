@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import util.Checkout;
+
 public class Library {
 
     public static void main(String[] args)throws IOException {
@@ -27,7 +29,18 @@ public class Library {
                     case 1: {
                         System.out.println("Please enter name of item to be requested");
                         itemName = br.readLine();
-                        ItemRequest requestObject = new ItemRequest(itemName);
+                        Checkout checkout = new Checkout(libraryCardNumber, itemName);
+                        boolean isAllowed = checkout.isCheckoutAllowed();
+                        // System.out.println(isAllowed);
+                        if(!isAllowed) {
+                            break;
+                        }
+
+                        ItemRequest requestObject = new ItemRequest(itemName, libraryCardNumber);
+                        requestObject.newRequest();
+                        IssuedItem issuedItem = new IssuedItem(itemName, libraryCardNumber);
+                        issuedItem.issueItem();
+                        System.out.println("The item " + itemName + " is checked out");
                         break;
 
                     }
