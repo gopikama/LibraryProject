@@ -40,10 +40,11 @@ public class IssuedItem {
                 calendar.setTime(new Date());
                 calendar.add(Calendar.DAY_OF_YEAR, durationInWeek * 7);
                 String dueDate = sdf.format(calendar.getTime());
-
-                System.out.println(dueDate);
+                //System.out.println(dueDate);
                 PreparedStatement stmt1=conn.prepareStatement("insert into `issuedItem` (`itemCategory`, `itemId`, `libraryCardNumber`, `dueDate`, `issueDate`, `noOfItemIssued`, `noOfOutstandingDays`) values ('"+this.itemCategory+"', '"+this.itemId+"', '"+this.libraryCardNumber+"', '"+dueDate+"', '"+issueDate+"', '"+1+"', '"+(durationInWeek * 7)+"')");
                 boolean res=stmt1.execute();
+                PreparedStatement stmt2=conn.prepareStatement("update `item` set isAvailable = 0 where itemId='" + this.itemId + "'");
+                boolean res2=stmt2.execute();
             }
 
         } catch(SQLException e) {

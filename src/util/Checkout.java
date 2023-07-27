@@ -15,7 +15,8 @@ public class Checkout {
         this.itemName = itemName;
     }
 
-    public boolean isCheckoutAllowed() {
+    public CheckoutStatus isCheckoutAllowed() {
+        CheckoutStatus checkoutStatus = new CheckoutStatus();
         try
         {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","admin@1234");
@@ -24,16 +25,20 @@ public class Checkout {
             if(item.next()) {
                 String itemCategory = item.getString(1);
                 int isAvailable = item.getInt(2);
-                if((itemCategory != "Book" && itemCategory != "Audio" && itemCategory == "Video") || isAvailable != 1) {
-                    System.out.println("The item " + this.itemName + " cannot be checked out due to unavailability or not eligible for checkout");
-                    return false;
+                if((itemCategory != "Book" && itemCategory != "Audio" && itemCategory != "Video") || isAvailable != 1) {
+                    System.out.println("The item " + this.itemName + " cannot be checked out due to unavailability or not eligible (Magazines / Reference books) for checkout!");
+                    if(isAvailable == 0 && itemCategory == "Book" && itemCategory == "Audio" && itemCategory == "Video") {
+                        checkoutStatus.shouldAddToRequest = true;
+                    }
+                    return checkoutStatus;
                 }
                 PreparedStatement stmt1=conn.prepareStatement("select age from `user` where libraryCardNumber='" + this.libraryCardNumber + "';");
                 ResultSet user=stmt1.executeQuery();
                 if(user.next()){
                     int age = Integer.parseInt(user.getString(1));
                     if(age > 12) {
-                        return true;
+                        checkoutStatus.isCheckoutAllowed = true;
+                        return checkoutStatus;
                     }
                     System.out.println(age);
 
@@ -44,19 +49,27 @@ public class Checkout {
                         // System.out.println(count);
                         if(count >= 5) {
                             System.out.println("The item " + this.itemName + " cannot be checked out due to limit of checkout for age <= 12");
-                            return false;
+                            checkoutStatus.isCheckoutAllowed = false;
+                            return checkoutStatus;
                         } else {
-                            return true;
+                            checkoutStatus.isCheckoutAllowed = true;
+                            return checkoutStatus;
                         }
                     }
                 }
+            } else {
+                checkoutStatus.shouldAddToRequest = true;
             }
 
         } catch(SQLException e) {
             System.out.println(e);
-            return false;
+            checkoutStatus.isCheckoutAllowed = false;
+            return checkoutStatus;
         }
 
-        return false;
+        checkoutStatus.isCheckoutAllowed = false;
+        return checkoutStatus;
     }
+
+
 }
