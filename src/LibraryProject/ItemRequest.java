@@ -5,14 +5,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ItemRequest {
     String itemName;
-    String itemId;
+    int itemId;
     String itemCategory;
     int libraryCardNumber;
-    int durationInWeek;
-    int isBestSellerBook;
+    String timeStamp;
 
     public ItemRequest(String itemName, int libraryCardNumber){
         this.itemName=itemName;
@@ -28,16 +30,25 @@ public class ItemRequest {
             PreparedStatement stmt=conn.prepareStatement("select itemId, itemName, itemCategory, durationInWeek, isBestSellerBook from `item` where itemName='" + this.itemName + "';");
             ResultSet item=stmt.executeQuery();
             if(item.next()){
-                this.itemId = item.getString(1);
+                this.itemId = item.getInt(1);
                 this.itemCategory = item.getString(3);
-                this.durationInWeek = item.getInt(4);
-                this.isBestSellerBook = item.getInt(5);
-                System.out.println(this.itemId);
-                PreparedStatement stmt1=conn.prepareStatement("insert into `request` (`libraryCardNumber`, `itemId`, `itemCategory`) values ('"+this.libraryCardNumber+"', '"+this.itemId+"', '"+this.itemCategory+"')");
-                boolean res=stmt1.execute();
-                PreparedStatement stmt2=conn.prepareStatement("update `item` set isAvailable = 0 where itemId='" + this.itemId + "'");
-                boolean res2=stmt2.execute();
+            } else {
+                PreparedStatement stmt1=conn.prepareStatement("select max(itemId) from `request`;");
+                ResultSet res=stmt1.executeQuery();
+                if(res.next()) {
+                    this.itemId = res.getInt(1) + 1;
+                } else {
+                    this.itemId = 0;
+                }
+                this.itemCategory = "new item";
             }
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String requestTimeStamp = sdf.format(calendar.getTime());
+            PreparedStatement stmt2=conn.prepareStatement("insert into `request` (`libraryCardNumber`, `itemId`, `itemCategory`, `itemName`,`requestTimeStamp`) values ('"+this.libraryCardNumber+"', '"+this.itemId+"', '"+this.itemCategory+"', '"+this.itemName+"', '"+requestTimeStamp+"')");
+            boolean res=stmt2.execute();
 
         } catch(SQLException e) {
             System.out.println(e);

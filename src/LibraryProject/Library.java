@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import util.Checkout;
+import util.CheckoutStatus;
 
 public class Library {
 
@@ -12,40 +13,43 @@ public class Library {
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
         System.out.println("LIBRARY MANAGEMENT SYSTEM");
         System.out.println("==========================");
-        System.out.println("Please enter your library card number");
+        System.out.println("Please enter your library card number:");
         int libraryCardNumber=Integer.parseInt(br.readLine());
         String itemName="";
         int choice;
         if(libraryCardNumber!=1111) {
             do {
-                System.out.println("Please select an option:");
-                System.out.println("1.request book\n" +
-                        "2.return book\n" +
-                        "3.renew book\n" +
-                        "4.get user information\n" +
-                        "5.optionToExit\n");
+                System.out.println("Please select an option to proceed:");
+                System.out.println("1.Request Item\n" +
+                        "2.Return Item\n" +
+                        "3.Renew Item\n" +
+                        "4.Get user information\n" +
+                        "5.Exit\n");
                 choice = Integer.parseInt(br.readLine());
                 switch (choice) {
                     case 1: {
-                        System.out.println("Please enter name of item to be requested");
+                        System.out.println("Please enter name of item to be requested:");
                         itemName = br.readLine();
                         Checkout checkout = new Checkout(libraryCardNumber, itemName);
-                        boolean isAllowed = checkout.isCheckoutAllowed();
-                        // System.out.println(isAllowed);
-                        if(!isAllowed) {
+                        CheckoutStatus checkoutStatus = checkout.isCheckoutAllowed();
+                        //System.out.println(checkoutStatus.isCheckoutAllowed + "" + checkoutStatus.shouldAddToRequest);
+                        if(!checkoutStatus.isCheckoutAllowed) {
+                            if(checkoutStatus.shouldAddToRequest) {
+                                System.out.println("The item is not available currently so your request is added to the system!");
+                                ItemRequest requestObject = new ItemRequest(itemName, libraryCardNumber);
+                                requestObject.newRequest();
+                            }
                             break;
                         }
 
-                        ItemRequest requestObject = new ItemRequest(itemName, libraryCardNumber);
-                        requestObject.newRequest();
                         IssuedItem issuedItem = new IssuedItem(itemName, libraryCardNumber);
                         issuedItem.issueItem();
-                        System.out.println("The item " + itemName + " is checked out");
+                        System.out.println("The item " + itemName + " is checked out!");
                         break;
 
                     }
                     case 2: {
-                        System.out.println("Please enter name of item to be returned");
+                        System.out.println("Please enter name of item to be returned:");
                         itemName = br.readLine();
                         ItemReturn returnObject = new ItemReturn(itemName);
                         break;
@@ -53,7 +57,7 @@ public class Library {
 
                     }
                     case 3: {
-                        System.out.println("Please enter name of item to be renewed");
+                        System.out.println("Please enter name of item to be renewed:");
                         itemName = br.readLine();
                         ItemRenew renewObject = new ItemRenew(itemName);
                         break;
@@ -71,7 +75,7 @@ public class Library {
 
                     }
                 }
-                System.out.println("Do you want to continue ,if you want to exit press 5 otherwise enter 0 to continue:");
+                System.out.println("Do you want to continue,if you want to exit press 5 otherwise enter 0 to continue:");
                 choice = Integer.parseInt(br.readLine());
 
 
