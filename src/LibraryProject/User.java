@@ -115,13 +115,36 @@ public class User {
                     System.out.print("Library Card Number: " + rs.getString(3) + "\n");
                     System.out.print("Issued item's ID: " + rs.getString(2) + "\n");
                     System.out.print("Due Date: " + rs.getString(4) + "\n");
-                    System.out.print("Outstanding days: " + rs.getString(7) + "\n");
+                    //if due date>current date calculate currentdate-duedate then multiply by 0.10 if this value<=itemvalue keep otherwise put itemValue
+                    //select datediff(now(),dueDate) from issueditem where libraryCardNumber=1222;
+                    PreparedStatement stmtDate = conn.prepareStatement("select datediff(now(),dueDate) from issueditem where libraryCardNumber=? and itemId=?;");
+                    stmtDate.setInt(1, Integer.parseInt(rs.getString(3)));
+                    stmtDate.setInt(2, Integer.parseInt(rs.getString(2)));
+                    ResultSet rs3 = stmtDate.executeQuery();
+                    if (rs3.next()) {
+                        int days = Integer.parseInt(rs3.getString(1));
+                        if (days > 0) {
+                            double fine = days * 0.10;
+                            double itemVal=0;
+                            PreparedStatement stmtToGetItemValue = conn.prepareStatement("select itemValue from item where itemId=? ;");
+                            stmtToGetItemValue.setInt(1, Integer.parseInt(rs.getString(2)));
+                            ResultSet rs4 = stmtDate.executeQuery();
+                            if (rs4.next()) {
+                                itemVal = Double.parseDouble(rs4.getString(1));
+                            }
+                            if (fine < itemVal) {
+                                System.out.print("Outstanding days fine: " + fine + "\n");
+                            } else if (fine >= itemVal) {
+                                System.out.print("Outstanding days fine: " + itemVal + "\n");
+                            }
+                        }
+                        else{
+                            System.out.println("No overdue fine");
+                        }
 
+                    }
                 }
-
-
             }
-
             if (flag == 0)
                 System.out.println("Invalid card number,user not found!");
 
@@ -144,6 +167,7 @@ public class User {
 
                 ResultSet rs=stmt.executeQuery();
 
+                double sum=0;
                 int flag=0;
                 int count =0;
                 while(rs.next()){
@@ -157,12 +181,41 @@ public class User {
                         System.out.print("Issued item's name: " + rs.getString(8) + "\n");
                         System.out.print("Issued Item's due date: " + rs.getString(4) + "\n");
                         System.out.print("Issued Item's issue date: " + rs.getString(5) + "\n");
-                        System.out.print("Outstanding days: " + rs.getString(7) + "\n");//issue
+                        PreparedStatement stmtDate = conn.prepareStatement("select datediff(now(),dueDate) from issueditem where libraryCardNumber=? and itemId=?;");
+                        stmtDate.setInt(1, libCard);
+                        stmtDate.setInt(2, Integer.parseInt(rs.getString(3)));
+                        ResultSet rs3 = stmtDate.executeQuery();
+                        if (rs3.next()) {
+                            int days = Integer.parseInt(rs3.getString(1));
+                            if (days > 0) {
+                                double fine = days * 0.10;
+                                double itemVal=0;
+                                PreparedStatement stmtToGetItemValue = conn.prepareStatement("select itemValue from item where itemId=? ;");
+                                stmtToGetItemValue.setInt(1, Integer.parseInt(rs.getString(3)));
+                                ResultSet rs4 = stmtDate.executeQuery();
+                                if (rs4.next()) {
+                                    itemVal = Double.parseDouble(rs4.getString(1));
+                                }
+                                if (fine < itemVal) {
+                                    System.out.print("Outstanding days fine: " + fine + "\n");
+                                    sum=sum+fine;
+                                } else if (fine >= itemVal) {
+                                    System.out.print("Outstanding days fine: " + itemVal + "\n");
+                                    sum=sum+fine;
+                                }
+                            }
+                            else{
+                                System.out.println("No overdue fine");
+                            }
+
+                        }
 
                     }
 
 
                 }
+                System.out.println("========================================");
+                System.out.println("Total fine:"+sum);
                 System.out.println("========================================");
                 if(flag==1) {
                     System.out.println("Number of books user has borrowed:"+count);
