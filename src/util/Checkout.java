@@ -59,8 +59,6 @@ public class Checkout {
                 }
             } else {
                 checkoutStatus.shouldAddToRequest = true;
-            } else {
-                checkoutStatus.shouldAddToRequest = true;
             }
 
         } catch(SQLException e) {
