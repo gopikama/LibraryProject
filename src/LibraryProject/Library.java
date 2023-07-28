@@ -17,9 +17,9 @@ public class Library {
         if(libraryCardNumber!=1111) {
             do {
                 System.out.println("Please select an option:");
-                System.out.println("1.request book\n" +
-                        "2.return book\n" +
-                        "3.renew book\n" +
+                System.out.println("1.request item\n" +
+                        "2.return item\n" +
+                        "3.renew item\n" +
                         "4.get user information\n" +
                         "5.optionToExit\n");
                 choice = Integer.parseInt(br.readLine());
@@ -49,6 +49,7 @@ public class Library {
                     }
                     case 4: {
                         User userObject = new User(libraryCardNumber);
+                        System.out.println("The details for this user:");
                         userObject.displayUserDetails();
                         break;
 
@@ -75,6 +76,7 @@ public class Library {
                 switch (choice) {
                     case 1: {
                         User userObject=new User(libraryCardNumber);
+                        System.out.println("The details for all users:");
                         userObject.displayUserDetails();
                         break;
                     }
@@ -87,9 +89,7 @@ public class Library {
                         User userObject = new User(libraryCardNumber);
                         System.out.println("Please enter library card number of user,whose issued book details are required:");
                         int libCard = Integer.parseInt(br.readLine());
-                        System.out.println("Please enter name of user,whose issued book details are required:");
-                        String name = br.readLine();
-                        userObject.displayBooksIssuedToUser(libCard,name);
+                        userObject.displayBooksIssuedToUser(libCard);
                         break;
                     }
                     case 4:

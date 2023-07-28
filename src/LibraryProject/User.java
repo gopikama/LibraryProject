@@ -19,7 +19,7 @@ public class User {
         this.libraryCardNumber=libraryCardNumber;
     }
     public void displayUserDetails() {
-        System.out.println("The details for all users are:");
+
         try
         {
             //Class.forName("com.mysql.jdbc.Driver");
@@ -30,27 +30,55 @@ public class User {
             int flag=0;
             while(rs.next()){
                 //fetching all user details for admin/library
+
                 if (libraryCardNumber == 1111){
+
                     flag=1;
                     if (Integer.parseInt(rs.getString(2))!=libraryCardNumber) {
+                        System.out.println("");
                         System.out.print("Name: " + rs.getString(1) + "\n");
                     System.out.print("Library Card Number: " + rs.getString(2) + "\n");
                     System.out.print("Address: " + rs.getString(3) + "\n");
                     System.out.print("Phone Number: " + rs.getString(4) + "\n");
                     System.out.print("Age: " + rs.getString(5) + "\n");
-                    System.out.print("Total Over Due Fine: " + rs.getString(6) + "\n");
-                }
+                    //run query to get from return table for each returned item for userid get sum(fine)
+
+                        PreparedStatement stmt1=conn.prepareStatement("SELECT SUM(fineForReturn) FROM returnitem WHERE libraryCardNumber=?;");
+                        stmt1.setInt(1,Integer.parseInt(rs.getString(2)));
+                        ResultSet rs1=stmt1.executeQuery();
+
+                        while(rs1.next()){
+                            if(rs1.getString(1)!=null)
+                            System.out.print("Total Over Due Fine: " + rs1.getString(1) + "\n");
+                            else
+                                System.out.print("Total Over Due Fine:0 \n");
+                        }
+                    }
+
                 }
                 //fetching a particular user's details for user
 
                 else if (Integer.parseInt(rs.getString(2))==(libraryCardNumber)){
-                        flag=1;
-                        System.out.print("Name: "+rs.getString(1)+"\n");
+
+                    flag=1;
+                    System.out.println("");
+                    System.out.print("Name: "+rs.getString(1)+"\n");
                     System.out.print("Library Card Number: "+rs.getString(2)+"\n");
                     System.out.print("Address: "+rs.getString(3)+"\n");
                     System.out.print("Phone Number: "+rs.getString(4)+"\n");
                     System.out.print("Age: "+rs.getString(5)+"\n");
-                    System.out.print("Total Over Due Fine: "+rs.getString(6)+"\n");
+                    //run query to get from return table
+                    PreparedStatement stmt1=conn.prepareStatement("SELECT SUM(fineForReturn) FROM returnitem WHERE libraryCardNumber=?;");
+                    stmt1.setInt(1,Integer.parseInt(rs.getString(2)));
+                    ResultSet rs1=stmt1.executeQuery();
+
+                    while(rs1.next()){
+                        if(rs.getString(1)!=null)
+                        System.out.print("Total Over Due Fine: " + rs1.getString(1) + "\n");
+                        else
+                            System.out.print("Total Over Due Fine: 0 \n");
+                    }
+
 
                 }
 
@@ -80,7 +108,7 @@ public class User {
 
             int flag = 0;
             while (rs.next()) {
-                //fetching all user details
+                //fetching all  books issued to user details
                 if (libraryCardNumber == 1111) {
                     flag = 1;
                     System.out.println("");
@@ -104,23 +132,25 @@ public class User {
 
         }
     }
-        public void displayBooksIssuedToUser(int libCard,String name){
+        public void displayBooksIssuedToUser(int libCard){
 
             System.out.println("Books issued to library card number: "+libCard+" are: ");
             try
             {
                 //Class.forName("com.mysql.jdbc.Driver");
                 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","GopuSri123@");
-                PreparedStatement stmt=conn.prepareStatement("select * from issueditem natural join item natural join user where libraryCardNumber=? and name=? ;");
+                PreparedStatement stmt=conn.prepareStatement("select * from issueditem natural join item natural join user where libraryCardNumber=?;");
                 stmt.setInt(1,libCard);
-                stmt.setString(2,name);
+
                 ResultSet rs=stmt.executeQuery();
 
                 int flag=0;
+                int count =0;
                 while(rs.next()){
                     //fetching all user details
                     if (libraryCardNumber == 1111){
                         flag=1;
+                        count=count+1;
                         System.out.println("");
                         System.out.print("User Name: " + rs.getString(13) + "\n");
                         System.out.print("Issued Item's ID: " + rs.getString(3) + "\n");
@@ -133,11 +163,14 @@ public class User {
 
 
                 }
-
-                if(flag==0 )
+                System.out.println("========================================");
+                if(flag==1) {
+                    System.out.println("Number of books user has borrowed:"+count);
+                }
+                else if(flag==0)
                     System.out.println("Invalid card number,user not found!");
 
-            }
+                }
             catch(SQLException  e)
             {
 
