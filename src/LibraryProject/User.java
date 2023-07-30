@@ -49,9 +49,9 @@ public class User {
 
                         while(rs1.next()){
                             if(rs1.getString(1)!=null)
-                            System.out.print("Total Over Due Fine: " + rs1.getString(1) + "\n");
+                            System.out.print("Total Over Due Fine Payed: " + rs1.getString(1) + "\n");
                             else
-                                System.out.print("Total Over Due Fine:0 \n");
+                                System.out.print("Total Over Due Fine Payed:0 \n");
                         }
                     }
 
@@ -76,7 +76,7 @@ public class User {
                         if(rs.getString(1)!=null)
                         System.out.print("Total Over Due Fine: " + rs1.getString(1) + "\n");
                         else
-                            System.out.print("Total Over Due Fine: 0 \n");
+                            System.out.print("Total Over Due Fine Payed: 0 \n");
                     }
 
 
@@ -133,13 +133,13 @@ public class User {
                                 itemVal = Double.parseDouble(rs4.getString(1));
                             }
                             if (fine < itemVal) {
-                                System.out.print("Outstanding days fine: " + fine + "\n");
+                                System.out.print("Outstanding days overdue fine: " + (double) Math.round(fine * 100) / 100 + "\n");
                             } else if (fine >= itemVal) {
-                                System.out.print("Outstanding days fine: " + itemVal + "\n");
+                                System.out.print("Outstanding days overdue fine: " + itemVal + "\n");
                             }
                         }
                         else{
-                            System.out.println("No overdue fine");
+                            System.out.println("No outstanding days overdue fine");
                         }
 
                     }
@@ -197,15 +197,15 @@ public class User {
                                     itemVal = Double.parseDouble(rs4.getString(1));
                                 }
                                 if (fine < itemVal) {
-                                    System.out.print("Outstanding days fine: " + fine + "\n");
+                                    System.out.print("No outstanding days overdue fine: " + (double) Math.round(fine * 100) / 100 + "\n");
                                     sum=sum+fine;
                                 } else if (fine >= itemVal) {
-                                    System.out.print("Outstanding days fine: " + itemVal + "\n");
+                                    System.out.print("No outstanding days overdue fine: " + itemVal + "\n");
                                     sum=sum+fine;
                                 }
                             }
                             else{
-                                System.out.println("No overdue fine");
+                                System.out.println("No  outstanding days overdue fine");
                             }
 
                         }
@@ -215,7 +215,7 @@ public class User {
 
                 }
                 System.out.println("========================================");
-                System.out.println("Total fine:"+sum);
+                System.out.println("Total outstanding overdue fine:"+(double) Math.round(sum * 100) / 100);
                 System.out.println("========================================");
                 if(flag==1) {
                     System.out.println("Number of books user has borrowed:"+count);
@@ -231,11 +231,6 @@ public class User {
 
 
             }
-
-
-
-
-
 
         }
 }
