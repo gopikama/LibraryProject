@@ -19,11 +19,11 @@ public class User {
         this.libraryCardNumber=libraryCardNumber;
     }
     public void displayUserDetails() {
-        System.out.println("The details for all users are:");
+        System.out.println("The details for this user are:");
         try
         {
             //Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","admin@1234");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","sakshi1234");
             PreparedStatement stmt=conn.prepareStatement("select * from user;");
             ResultSet rs=stmt.executeQuery();
 
@@ -74,7 +74,7 @@ public class User {
 
         try {
             //Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary", "root", "GopuSri123@");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary", "root", "sakshi1234");
             PreparedStatement stmt = conn.prepareStatement("select * from issueditem;");
             ResultSet rs = stmt.executeQuery();
 
@@ -110,7 +110,7 @@ public class User {
             try
             {
                 //Class.forName("com.mysql.jdbc.Driver");
-                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","GopuSri123@");
+                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/selibrary","root","sakshi1234");
                 PreparedStatement stmt=conn.prepareStatement("select * from issueditem natural join item natural join user where libraryCardNumber=? and name=? ;");
                 stmt.setInt(1,libCard);
                 stmt.setString(2,name);
