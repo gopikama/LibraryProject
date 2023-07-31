@@ -32,7 +32,7 @@ public class Library {
                         itemName = br.readLine();
                         Checkout checkout = new Checkout(libraryCardNumber, itemName);
                         CheckoutStatus checkoutStatus = checkout.isCheckoutAllowed();
-                        //System.out.println(checkoutStatus.isCheckoutAllowed + "" + checkoutStatus.shouldAddToRequest);
+                        // System.out.println(checkoutStatus.isCheckoutAllowed + "" + checkoutStatus.shouldAddToRequest);
                         if(!checkoutStatus.isCheckoutAllowed) {
                             if(checkoutStatus.shouldAddToRequest) {
                                 System.out.println("The item is not available currently so your request is added to the system!");
