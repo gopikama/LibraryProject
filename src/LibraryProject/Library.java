@@ -1,5 +1,8 @@
 package LibraryProject;
 
+import util.Checkout;
+import util.CheckoutStatus;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,21 +28,32 @@ public class Library {
                 choice = Integer.parseInt(br.readLine());
                 switch (choice) {
                     case 1: {
-                        System.out.println("Please enter your library card Number");
-                        int libraryCard=Integer.parseInt(br.readLine());
-                        System.out.println("Please enter name of item to be requested");
+                        System.out.println("Please enter name of item to be requested:");
                         itemName = br.readLine();
+                        Checkout checkout = new Checkout(libraryCardNumber, itemName);
+                        CheckoutStatus checkoutStatus = checkout.isCheckoutAllowed();
+                        //System.out.println(checkoutStatus.isCheckoutAllowed + "" + checkoutStatus.shouldAddToRequest);
+                        if(!checkoutStatus.isCheckoutAllowed) {
+                            if(checkoutStatus.shouldAddToRequest) {
+                                System.out.println("The item is not available currently so your request is added to the system!");
+                                ItemRequest requestObject = new ItemRequest(itemName, libraryCardNumber);
+                                requestObject.newRequest();
+                            }
+                            break;
+                        }
 
-                      //  ItemRequest requestObject = new ItemRequest(libraryCard, itemName);
-                       // requestObject.CheckRequest(libraryCard,itemName);
+                        IssuedItem issuedItem = new IssuedItem(itemName, libraryCardNumber);
+                        issuedItem.issueItem();
+                        System.out.println("The item " + itemName + " is checked out!");
                         break;
+
 
                     }
                     case 2: {
                         System.out.println("Please enter name of item to be returned");
                         itemName = br.readLine();
                         ItemReturn returnObject = new ItemReturn(libraryCardNumber,itemName);
-                        returnObject.returnItem( libraryCardNumber,itemName);
+                        ItemReturn.returnItem( libraryCardNumber,itemName);
                         break;
 
 

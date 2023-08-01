@@ -1,12 +1,17 @@
 package LibraryProject;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ItemRenew {
     int libraryCardNumber;
     String itemName;
-    int renewCount=0;
+    int renewCount;
      int itemId;
+     int durationInWeek;
+    int requestCheck;
 
     public ItemRenew(String itemName, int libraryCardNumber){
         this.itemName=itemName;
@@ -20,51 +25,56 @@ public class ItemRenew {
             ResultSet resultSet = stmts.executeQuery();
             if(resultSet.next()){
                 itemId=resultSet.getInt(1);
+                durationInWeek=resultSet.getInt(4);
+                itemName=resultSet.getString(3);
             }
-            PreparedStatement stmt = conn.prepareStatement("select renewCount from renew where itemId=? and itemName=? and libraryCardNumber=?;");
-            stmt.setString(2, itemName);
-            stmt.setInt(3,libraryCardNumber);
+            PreparedStatement stmt = conn.prepareStatement("select renewCount from issuedItem where itemId=? and libraryCardNumber=?;");
+
+            stmt.setInt(2,libraryCardNumber);
             stmt.setInt(1,itemId);
+
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
                 renewCount= rs.getInt(1);
             }
-            PreparedStatement stmt1= conn.prepareStatement("select COUNT(*) from request where itemId=? and libraryCardNumber=?;");
-            //PreparedStatement stmt1= conn.prepareStatement("select COUNT(*) from request where itemId=? itemName=? and libraryCardNumber=?;");
-            //stmt1.setString(1, itemName);
-            stmt1.setInt(2,libraryCardNumber);
+            PreparedStatement stmt1= conn.prepareStatement("select COUNT(*) from request where itemId=?;");
             stmt1.setInt(1,itemId);
             ResultSet rs1 = stmt1.executeQuery();
-            int requestCheck=0;
-            if(rs1.next())
-                requestCheck=rs1.getInt(1);
 
 
-            if(renewCount>=1){
-                System.out.println("Error:item Cannot be renewed more than once, returning this item");
-                ItemReturn.returnItem(libraryCardNumber,itemName);
-                renewCount=0;
-
+            if(rs1.next()) {
+                requestCheck = rs1.getInt(1);
             }
-            else if(requestCheck!=0) {
+
+            if(requestCheck!=0){
                 System.out.println("Error:item Cannot be renewed, there's an outstanding request for this item, returning this item");
                 ItemReturn.returnItem(libraryCardNumber,itemName);
-                renewCount=0;
-            } else{
-                PreparedStatement stmt3= conn.prepareStatement("delete from issuedItem where itemId=? and libraryCardNumber=?;");
-                stmt3.setInt(1, itemId);
-                stmt3.setInt(2,libraryCardNumber);
-                 stmt3.executeUpdate();
-                //IssuedItem issuedItem=new IssuedItem(itemName,libraryCardNumber);
-                //issuedItem.issueItem();
-                renewCount++;
+
             }
-            PreparedStatement psmt= conn.prepareStatement("update renew set renewCount=? , itemId=? where itemName=? and libraryCardNumber=?;");
-            psmt.setInt(1,renewCount);
-            psmt.setString(3,itemName);
-            psmt.setInt(4,libraryCardNumber);
-            psmt.setInt(2,itemId);
-            psmt.executeUpdate();
+            else if(renewCount>=1) {
+                System.out.println("Error:item Cannot be renewed more than once, returning this item");
+                ItemReturn.returnItem(libraryCardNumber,itemName);
+            } else{
+                System.out.println("Item" +itemName+ "renewed");
+                //reissue, change issuedate,duedate,renewcount
+                renewCount++;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String issueDate = sdf.format(new java.util.Date());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DAY_OF_YEAR, durationInWeek * 7);
+                String dueDate = sdf.format(calendar.getTime());
+                PreparedStatement stmt3=conn.prepareStatement("update issuedItem set dueDate=?,issueDate=?, renewCount=? where libraryCardNumber=? and itemId=?;");
+                stmt3.setString(1,dueDate);
+                stmt3.setString(2,issueDate);
+                stmt3.setInt(3, renewCount);
+                stmt3.setInt(4,libraryCardNumber);
+                stmt3.setInt(5,itemId);
+                stmt3.executeUpdate();
+
+
+            }
+
 
 
         }
