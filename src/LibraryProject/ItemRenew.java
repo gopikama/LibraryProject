@@ -55,7 +55,7 @@ public class ItemRenew {
                 System.out.println("Error:item Cannot be renewed more than once, returning this item");
                 ItemReturn.returnItem(libraryCardNumber,itemName);
             } else{
-                System.out.println("Item" +itemName+ "renewed");
+                System.out.println("Item " +itemName+ " renewed");
                 //reissue, change issuedate,duedate,renewcount
                 renewCount++;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

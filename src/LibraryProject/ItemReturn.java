@@ -48,17 +48,19 @@ public class ItemReturn {
                             dueDate= rs3.getDate(1).toLocalDate();
                         Period diff = Period.between(dueDate, returnDateString);
                         noOfOutStandingDays = diff.getDays();
-                        System.out.println("Number of outstanding days: "+noOfOutStandingDays);
-                        if(noOfOutStandingDays>0)
+                       if(noOfOutStandingDays<0)
+                           System.out.println("Number of outstanding days: 0");
+                        if(noOfOutStandingDays>0){
                             fineForReturn = (noOfOutStandingDays * .10);
+                        System.out.println("Number of outstanding days: "+noOfOutStandingDays);}
                         else fineForReturn=0;
                         if(fineForReturn>itemValue){
                             fineForReturn=itemValue;
                         }
-                        System.out.println("Fine to be paid for this item : %.2f" +fineForReturn);
+                        System.out.println("Fine to be paid for this item : " +Math.round(fineForReturn));
                         String returnDate =returnDateString.toString();
 
-                        PreparedStatement stmt4 = conn.prepareStatement("insert into selibrary.return(libraryCardNumber, itemId,returnDate,fineForReturn)" + "values(?,?,?,?);");
+                        PreparedStatement stmt4 = conn.prepareStatement("insert into selibrary.returnitem(libraryCardNumber, itemId,returnDate,fineForReturn)" + "values(?,?,?,?);");
                         stmt4.setInt(1, libraryCardNumber);
                         stmt4.setInt(2, itemId);
                         stmt4.setString(3, returnDate);
